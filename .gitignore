@@ -1,0 +1,4 @@
+# Default ignored files
+/.idea
+/model/
+__pycache__
