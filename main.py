@@ -69,13 +69,17 @@ class RunThread(QtCore.QThread):
         """
         path = cur_file_dir()
         file = path+'./image/test.jpg'
+        if self.parent.flag ==1:
+            # 监测运行，等待1hour
+            self.sleep(3600)
+            print('sleep wait ok')
         try:
             id = get_device_id()
-            time.sleep(0.2)
+            self.sleep(0.2)
             if unlock_phone(id):
-                time.sleep(1)
+                self.sleep(1)
                 res = take_photo(id)
-                time.sleep(2)
+                self.sleep(2)
             if res:
                 get_photo(id,file)
         except Exception as e:
@@ -121,11 +125,13 @@ class Form(QMainWindow):
         self.ui.setupUi(self)
         self.setWindowTitle("60Ghz毫米波延时测试程序")
         self.img=''
+        self.flag=0
         # 连接信号与槽函数
         self.connect(self.ui.img, SIGNAL("clicked()"), self.select_img)
         self.connect(self.ui.run, SIGNAL("clicked()"), self.start_run)
         self.connect(self.ui.actionhelp, QtCore.SIGNAL("triggered()"), self.help)
         self.connect(self.ui.running, SIGNAL("clicked()"), self.start_running)
+        self.connect(self.ui.test, SIGNAL("clicked()"), self.start_test_running)
         # 子线程
         self.run_thread = Thread(self)
         self.running_thread = RunThread(self)
@@ -139,7 +145,7 @@ class Form(QMainWindow):
         self.statusBar().showMessage("已选择文件")
 
     def help(self):
-        QtWidgets.QMessageBox.about(self,u"帮助信息",u"Auther: FanHao\n1.仅支持jpg,jpeg,bmp,png等格式图片\n2.图片不宜过大,2MB以下最好\n3.图片最好保证数字清晰可见,不模糊以达到最好识别效果")
+        QtWidgets.QMessageBox.about(self,u"帮助信息",u"Author: FanHao\n1.仅支持jpg,jpeg,bmp,png等格式图片\n2.秒表软件数据格式要求：XX时XX分XX秒XXX毫秒\n3.图片最好保证数字清晰可见,不模糊以达到最好识别效果")
 
     def start_run(self):
         a = re.findall('^.*\.(jpg|jpeg|bmp|png)$',self.img)
@@ -150,6 +156,13 @@ class Form(QMainWindow):
             self.run_thread.start_test()
 
     def start_running(self):
+        self.running_thread.start_run()
+
+    def start_test_running(self):
+        self.statusBar().showMessage("程序监测运行中...")
+        self.flag = 1
+        print("start_test_running")
+        # self.running_thread.test_thread()
         self.running_thread.start_run()
 
 if __name__ == '__main__':
