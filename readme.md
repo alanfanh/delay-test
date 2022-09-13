@@ -16,11 +16,14 @@
 delay-test
 |
 |--common
-|  |
+|  |---common.py    # 通用函数
 |  |---gui.ui       # gui文件
 |  |---gui.py       # 界面源码
 |
-|--main.py          # 界面主线程,工作子线程,核心处理逻辑
+|--image            # 图片目录
+|--model            # 数据模型目录
+|
+|--main.py          # 界面主线程,工作子线程,核心处理逻辑,项目入口
 |--readme.md        # 说明文件
 |
 ````
